@@ -16,6 +16,7 @@ mongoose.connect(db.url);
 //use bodyParser to get Post data
 app.use(bodyParser.urlencoded({extended: true}));   //get params from url (I think)
 app.use(bodyParser.json());                       //parse as json
+app.use(express.static(__dirname + '/public'));   //set static asset directory
 
 var port = process.env.PORT || 5555;              //set port
 
@@ -190,11 +191,10 @@ router.route('/products/:product_id')
 // REGISTER ROUTES -------------------------------
 // all routes will be prefixed with /api/v1.0
 
-
 app.use('/api/v1.0', router);
-
-
-
+app.get('*', function(req, res) {
+  res.sendfile('./public/index.html');
+})
 
 // START THE SERVER
 // =============================================================================
