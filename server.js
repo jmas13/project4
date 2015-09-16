@@ -6,11 +6,12 @@ var express     = require('express');
 var app         = express();
 var bodyParser  = require('body-parser');
 var mongoose    = require('mongoose');
+var db          = require('./config/db');
 // call Models
 var Merchant    = require('./app/models/merchant');
 var Product     = require('./app/models/product');
 
-mongoose.connect('mongodb://localhost/mrkt');
+mongoose.connect(db.url);
 
 //use bodyParser to get Post data
 app.use(bodyParser.urlencoded({extended: true}));   //get params from url (I think)
@@ -24,7 +25,7 @@ var port = process.env.PORT || 5555;              //set port
 // get instance of express Router
 var router = express.Router();
 
-// middleware to use for all requests - probably putting authentication here
+// middleware to use for all requests - TODO: probably putting authentication here
 router.use(function(req, res, next) {
     // do logging for now
     console.log('Stuff is going down.');
@@ -37,12 +38,13 @@ router.get('/', function(req, res) {
   res.json({ message: 'Hello! This is the API root!'});
 });
 
-// routes that end in /merchants -----------------------------------------------
+// routes for merchants --------------------------------------------------------
 router.route('/merchants')
   // Create a merchant
   // accessed in dev at POST http://localhost:5555/api/v1.0/merchants
   .post(function(req, res) {
     var merchant = new Merchant();
+    // NOTE: for... in... loop here?
     merchant.name         = req.body.name;
     merchant.description  = req.body.description;
     // NOTE: expected to need to do some type coercion here but handled by body-parser or urlencoding or both?
@@ -52,7 +54,7 @@ router.route('/merchants')
       if (err){
         res.send(err);
       }
-      res.json({message: 'merchant created!'})
+      res.json({message: 'merchant created'})
     });
   })
   // Get all the merchants!
@@ -65,7 +67,7 @@ router.route('/merchants')
       res.json(merchants);
     });
   });
-// routes that end in /merchants/:merchant_id ----------------------------------
+// routes for a merchant -------------------------------------------------------
 router.route('/merchants/:merchant_id')
   // Get a merchant by id
   // accessed in dev at GET http://localhost:5555/api/v1.0/merchants/merchant_id
@@ -85,13 +87,114 @@ router.route('/merchants/:merchant_id')
       if (err) {
         res.send(err);
       }
-
-    })
+      for (attr in req.body){
+        merchant[attr] = req.body[attr];
+      }
+      // Save merchant
+      // NOTE: no error for illegal attributes but doesn't add to document
+      merchant.save(function(err){
+        if (err) {
+          res.send(err);
+        }
+        res.json({message: 'merchant updated'});
+      });
+    });
   })
+  // Delete a merchant
+  // accessed in dev at DELETE http://localhost:555/api/v1.0/merchants/merchant_id
+  .delete(function(req, res) {
+    // NOTE: merchant (second arg of call back) is more like result object
+    Merchant.remove({ _id: req.params.merchant_id}, function(err, merchant) {
+      if (err) {
+        res.send(err);
+      }
+      res.json({message: 'deleted merchant'});
+    });
+  });
+
+// routes for products ---------------------------------------------------------
+router.route('/merchants/:merchant_id/products')
+  // Create a new product for a merchant
+  // accessed in dev at POST http://localhost:555/api/v1.0/merchants/merchant_id/products
+  .post(function(req, res) {
+    var product = new Product();
+    product._merchant    = req.params.merchant_id;
+    product.name         = req.body.name;
+    product.description  = req.body.description;
+    product.price        = req.body.price;
+    product.unit         = req.body.unit;
+    product.available    = req.body.available;
+
+    // save the product and check for errors
+    product.save(function(err) {
+      if (err) {
+        res.send(err);
+      }
+      res.json({message: 'producted created'});
+    });
+  })
+  // Show products for a merchant
+  // accessed in dev at GET http://localhost:5555/api/v1.0/merchants/merchant_id/products
+  .get(function(req, res) {
+    // TODO: figure out custom index for products on _merchant
+    Product.find({_merchant: req.params.merchant_id}, function(err, products) {
+      if (err) {
+        res.send(err);
+      }
+      res.json(products);
+    })
+  });
+
+// routes for a product --------------------------------------------------------
+router.route('/products/:product_id')
+  // Get a product by id
+  // accessed in dev at GET http://localhost:5555/api/v1.0/products/product_id
+  .get(function(req, res){
+    Product.findById(req.params.product_id, function(err, product) {
+      if (err) {
+        res.send(err);
+      }
+      res.json(product);
+    });
+  })
+  // Update a product
+  // accessed in dev at PUT http://localhost:5555/api/v1.0/products/product_id
+  .put(function(req, res) {
+    Product.findById(req.params.product_id, function(err, product) {
+      if (err) {
+        res.send(err);
+      }
+      for (attr in req.body) {
+        product[attr] = req.body[attr];
+      }
+      // save product
+      product.save(function(err) {
+        if (err) {
+          res.send(err);
+        }
+        res.json({message: 'product updated'});
+      });
+    });
+  })
+  // Delete a product
+  // accessed in dev at DELETE http:/localhost:5555/api/v1.0/products/product_id
+  .delete(function(req, res) {
+    Product.remove({_id: req.params.product_id}, function(err, product) {
+      if (err) {
+        res.send(err);
+      }
+      res.send({message: 'product deleted'})
+    });
+  });
 
 // REGISTER ROUTES -------------------------------
 // all routes will be prefixed with /api/v1.0
+
+
 app.use('/api/v1.0', router);
+
+
+
 
 // START THE SERVER
 // =============================================================================
