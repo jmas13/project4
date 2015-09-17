@@ -1,5 +1,5 @@
 // NOTE: writing these seeds was one of the most time consuming and revealing parts of this project
-// still a work in progress. Understanding asynchronicity doesn't happen all at once
+// still a work in progress. Fixing asynchronicity bugs happens over time
 var mongoose    = require('mongoose');
 var url          = require('./db').url;
 
