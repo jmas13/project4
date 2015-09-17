@@ -3,15 +3,21 @@
 
 // call the packages we need
 var express     = require('express');
+// Set environment (not totally sure where the best place to put this is)
+var env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+
 var app         = express();
 var bodyParser  = require('body-parser');
 var mongoose    = require('mongoose');
 var db          = require('./config/db');
 // call Models
-var Merchant    = require('./app/models/merchant');
-var Product     = require('./app/models/product');
+var Merchant    = require('./server/models/merchant');
+var Product     = require('./server/models/product');
 
 mongoose.connect(db.url);
+
+app.set('views', __dirname + '/server/views');
+app.set('view engine', 'jade');
 
 //use bodyParser to get Post data
 app.use(bodyParser.urlencoded({extended: true}));   //get params from url (I think)
@@ -200,7 +206,7 @@ router.route('/products/:product_id')
 
 app.use('/api/v1.0', router);
 app.get('*', function(req, res) {
-  res.sendfile('./public/index.html');
+  res.render('index');
 })
 
 // START THE SERVER

@@ -3,8 +3,8 @@
 var mongoose    = require('mongoose');
 var url          = require('./db').url;
 
-var Merchant    = require('../app/models/merchant');
-var Product     = require('../app/models/product');
+var Merchant    = require('../server/models/merchant');
+var Product     = require('../server/models/product');
 
 // TODO: Drop database or empty collections before seeding
 mongoose.connect(url);
