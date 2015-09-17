@@ -45,7 +45,7 @@ router.route('/merchants')
   // accessed in dev at POST http://localhost:5555/api/v1.0/merchants
   .post(function(req, res) {
     var merchant = new Merchant();
-    // NOTE: for... in... loop here?
+    // TODO: for... in... loop here?
     merchant.name         = req.body.name;
     merchant.description  = req.body.description;
     // NOTE: expected to need to do some type coercion here but handled by body-parser or urlencoding or both?
@@ -104,13 +104,20 @@ router.route('/merchants/:merchant_id')
   // Delete a merchant
   // accessed in dev at DELETE http://localhost:555/api/v1.0/merchants/merchant_id
   .delete(function(req, res) {
-    // NOTE: merchant (second arg of call back) is more like result object
-    Merchant.remove({ _id: req.params.merchant_id}, function(err, merchant) {
+    // TODO: look into async.js
+    // Remove all products of merchant to be deleted
+    Product.remove({_merchant: req.params.merchant_id}, function (err, products) {
       if (err) {
         res.send(err);
       }
-      res.json({message: 'deleted merchant'});
-    });
+      Merchant.remove({ _id: req.params.merchant_id}, function(err, merchant) {
+        if (err) {
+          res.send(err);
+        }
+        res.json({message: 'merchant deleted'});
+      });
+    })
+    // NOTE: merchant (second arg of call back) is more like result object
   });
 
 // routes for products ---------------------------------------------------------
