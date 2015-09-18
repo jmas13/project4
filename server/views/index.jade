@@ -1,5 +1,17 @@
 extends ../includes/layout
 
 block main-content
+  nav.navbar.navbar-fixed-top
+    .container
+      .navbar-header
+        a.navbar-brand(href="/") The Mrkt
+      .navbar-collapse.collapse
+        ul.nav.navbar-nav
+          li
+            a(href="/") Home
+            
   section.content
     div(ng-view)
+  
+  footer.containter.text-center
+    p &copy; jsm

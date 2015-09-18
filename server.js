@@ -65,7 +65,7 @@ router.use(function(req, res, next) {
 });
 
 // Test route make sure everything is working
-// accessed in dev at GET http://localhost:5555/api/v1.0/
+// accessed in dev at GET http://localhost:5555/api/v0.0/
 router.get('/', function(req, res) {
   res.json({ message: 'Hello! This is the API root!'});
 });
@@ -73,7 +73,7 @@ router.get('/', function(req, res) {
 // routes for merchants --------------------------------------------------------
 router.route('/merchants')
   // Create a merchant
-  // accessed in dev at POST http://localhost:5555/api/v1.0/merchants
+  // accessed in dev at POST http://localhost:5555/api/v0.0/merchants
   .post(function(req, res) {
     var merchant = new Merchant();
     // TODO: for... in... loop here?
@@ -90,7 +90,7 @@ router.route('/merchants')
     });
   })
   // Get all the merchants!
-  // accessed in dev at GET http://localhost:5555/api/v1.0/merchants
+  // accessed in dev at GET http://localhost:5555/api/v0.0/merchants
   .get(function(req, res) {
     Merchant.find(function(err, merchants) {
       if (err) {
@@ -102,7 +102,7 @@ router.route('/merchants')
 // routes for a merchant -------------------------------------------------------
 router.route('/merchants/:merchant_id')
   // Get a merchant by id
-  // accessed in dev at GET http://localhost:5555/api/v1.0/merchants/merchant_id
+  // accessed in dev at GET http://localhost:5555/api/v0.0/merchants/merchant_id
   .get(function(req, res) {
     Merchant.findById(req.params.merchant_id, function(err, merchant) {
       if (err) {
@@ -112,7 +112,7 @@ router.route('/merchants/:merchant_id')
     });
   })
   // Update a merchant
-  // accessed in dev at PUT http://localhost:5555/api/v1.0/merchants/merchant_id
+  // accessed in dev at PUT http://localhost:5555/api/v0.0/merchants/merchant_id
   // TODO: consider .findByIdAndUpdate (will bypass validations so prolly not)
   .put(function(req, res) {
     Merchant.findById(req.params.merchant_id, function(err, merchant) {
@@ -133,7 +133,7 @@ router.route('/merchants/:merchant_id')
     });
   })
   // Delete a merchant
-  // accessed in dev at DELETE http://localhost:555/api/v1.0/merchants/merchant_id
+  // accessed in dev at DELETE http://localhost:555/api/v0.0/merchants/merchant_id
   .delete(function(req, res) {
     // TODO: look into async.js
     // Remove all products of merchant to be deleted
@@ -154,7 +154,7 @@ router.route('/merchants/:merchant_id')
 // routes for products ---------------------------------------------------------
 router.route('/merchants/:merchant_id/products')
   // Create a new product for a merchant
-  // accessed in dev at POST http://localhost:555/api/v1.0/merchants/merchant_id/products
+  // accessed in dev at POST http://localhost:5555/api/v0.0/merchants/merchant_id/products
   .post(function(req, res) {
     var product = new Product();
     product._merchant    = req.params.merchant_id;
@@ -173,7 +173,7 @@ router.route('/merchants/:merchant_id/products')
     });
   })
   // Show products for a merchant
-  // accessed in dev at GET http://localhost:5555/api/v1.0/merchants/merchant_id/products
+  // accessed in dev at GET http://localhost:5555/api/v0.0/merchants/merchant_id/products
   .get(function(req, res) {
     // TODO: figure out custom index for products on _merchant
     Product.find({_merchant: req.params.merchant_id}, function(err, products) {
@@ -187,7 +187,7 @@ router.route('/merchants/:merchant_id/products')
 // routes for a product --------------------------------------------------------
 router.route('/products/:product_id')
   // Get a product by id
-  // accessed in dev at GET http://localhost:5555/api/v1.0/products/product_id
+  // accessed in dev at GET http://localhost:5555/api/v0.0/products/product_id
   .get(function(req, res){
     Product.findById(req.params.product_id, function(err, product) {
       if (err) {
@@ -197,7 +197,7 @@ router.route('/products/:product_id')
     });
   })
   // Update a product
-  // accessed in dev at PUT http://localhost:5555/api/v1.0/products/product_id
+  // accessed in dev at PUT http://localhost:5555/api/v0.0/products/product_id
   .put(function(req, res) {
     Product.findById(req.params.product_id, function(err, product) {
       if (err) {
@@ -216,7 +216,7 @@ router.route('/products/:product_id')
     });
   })
   // Delete a product
-  // accessed in dev at DELETE http:/localhost:5555/api/v1.0/products/product_id
+  // accessed in dev at DELETE http:/localhost:5555/api/v0.0/products/product_id
   .delete(function(req, res) {
     Product.remove({_id: req.params.product_id}, function(err, product) {
       if (err) {
@@ -227,9 +227,9 @@ router.route('/products/:product_id')
   });
 
 // REGISTER ROUTES -------------------------------
-// all routes will be prefixed with /api/v1.0
+// all routes will be prefixed with /api/v0.0
 
-app.use('/api/v1.0', router);
+app.use('/api/v0.0', router);
 
 // When a partial is requested - render from the jade template in views/partials
 app.get('/partials/:partialPath', function(req, res) {

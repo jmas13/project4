@@ -1,2 +1,13 @@
-h1 This is a Partial
-h2 {{ myVar }}
+.container
+  .jumbotron
+    h1 The Mrkt
+    p Welcome to the Mrkt!
+    p How many times have you been casually walking around the farmers market on a weekend morning, sun on your face, breeze rustling your hair, maybe accompanied by friends and loved ones, and thought "Why can't I just be at home, inside, on my computer &#8253;"?
+    p Likely never, but I thought it would be a good premise for implementing an app on the MEAN stack with two-model CRUD functionality. Hooray! 
+    p And, in the case that you have, Fret no more! the Mrkt brings you all the farm fresh goods of the farmers market with none of the aweful being outside and around other people -- rejoice!
+  
+  .row
+    .col-md-8
+      div(ng-include="'/partials/open-merchants'")
+    .col-md-4
+      div(ng-include="'/partials/closed-merchants'")

@@ -1,0 +1,8 @@
+.panel.panel-primary
+  .panel-heading.text-center 
+    h2 Open This Weekend!
+  .panel-body
+    .row(ng-repeat="merchant in merchants | filter:{open: false}")
+      .col-md-12 
+        h3 {{merchant.name}}
+        p {{merchant.description}}
