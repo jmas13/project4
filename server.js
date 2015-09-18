@@ -32,7 +32,12 @@ app.use(stylus.middleware(
 ));
 app.use(express.static(__dirname + '/public'));   //set static asset directory
 
-mongoose.connect('mongodb://localhost/mrkt');
+if (process.env.NODE_ENV == 'development') {
+  mongoose.connect('mongodb://localhost/mrkt');
+}
+else {
+  mongoose.connect('mongodb://'+ process.env.MONGOLAB_USER +':'+ process.env.MONGOLAB_PASS +'@ds027483.mongolab.com:27483/mrkt')  
+}
 
 var db = mongoose.connection;
 // TODO: Look into syntax of both of the below -- get what they do but why write like this?
@@ -45,7 +50,6 @@ db.once('open', function callback() {
 app.use(bodyParser.urlencoded({extended: true}));   //get params from url (I think)
 app.use(bodyParser.json());                       //parse as json
 
-var port = process.env.PORT || 5555;              //set port
 
 // ROUTES FOR API
 // =============================================================================
@@ -238,5 +242,6 @@ app.get('/', function(req, res) {
 
 // START THE SERVER
 // =============================================================================
+var port = process.env.PORT || 5555;              //set port
 app.listen(port);
 console.log('port ' + port + ' is where the magic happens')

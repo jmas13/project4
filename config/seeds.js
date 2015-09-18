@@ -1,13 +1,12 @@
 // NOTE: writing these seeds was one of the most time consuming and revealing parts of this project
 // still a work in progress. Fixing asynchronicity bugs happens over time
 var mongoose    = require('mongoose');
-var url          = require('./db').url;
 
 var Merchant    = require('../server/models/merchant');
 var Product     = require('../server/models/product');
 
 // TODO: Drop database or empty collections before seeding
-mongoose.connect(url);
+mongoose.connect('mongodb://localhost/mrkt');
 var db = mongoose.connection;
 // TODO: this is from mongoose quickstart -- look into exactly what it does (the console.error bit)
 db.on('error', console.error.bind(console, 'connection error:'));
