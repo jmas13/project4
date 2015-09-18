@@ -244,4 +244,4 @@ app.get('/', function(req, res) {
 // =============================================================================
 var port = process.env.PORT || 5555;              //set port
 app.listen(port);
-console.log('port ' + port + ' is where the magic happens')
+console.log('port ' + port + ' is where the magic happens in ' + process.env.NODE_ENV)
