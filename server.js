@@ -32,11 +32,11 @@ app.use(stylus.middleware(
 ));
 app.use(express.static(__dirname + '/public'));   //set static asset directory
 
-if (process.env.NODE_ENV == 'development') {
+if (process.env.NODE_ENV === 'development') {
   mongoose.connect('mongodb://localhost/mrkt');
 }
 else {
-  mongoose.connect('mongodb://'+ process.env.MONGOLAB_USER +':'+ process.env.MONGOLAB_PASS +'@ds027483.mongolab.com:27483/mrkt')  
+  mongoose.connect('mongodb://'+ process.env.MONGOLAB_USER +':'+ process.env.MONGOLAB_PASS +'@ds027483.mongolab.com:27483/mrkt')
 }
 
 var db = mongoose.connection;

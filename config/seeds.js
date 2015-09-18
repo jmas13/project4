@@ -7,7 +7,7 @@ var Product     = require('../server/models/product');
 
 // TODO: Drop database or empty collections before seeding
 // TODO: Dry up below conditional (repeated in server.js)
-if (process.env.NODE_ENV == 'development') {
+if (process.env.NODE_ENV === 'development') {
   mongoose.connect('mongodb://localhost/mrkt');
 }
 else {
