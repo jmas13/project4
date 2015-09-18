@@ -2,7 +2,7 @@
   .panel-heading.text-center 
     h2 Closed This Weekend
   .panel-body
-    .row(ng-repeat="merchant in merchants | filter:{open: true}")
+    .row(ng-repeat="merchant in merchants | filter:{open: false}")
       .col-md-12 
         h3 {{merchant.name}}
         p {{merchant.description}}
