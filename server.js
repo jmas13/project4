@@ -15,12 +15,10 @@ var app = express();
 function compile(str, path) {
   return stylus(str).set('filename', path);
 }
-var db          = require('./config/db');
 // call Models
 var Merchant    = require('./server/models/merchant');
 var Product     = require('./server/models/product');
 
-mongoose.connect(db.url);
 
 // CONFIGURATION
 // =============================================================================
@@ -33,6 +31,15 @@ app.use(stylus.middleware(
   }
 ));
 app.use(express.static(__dirname + '/public'));   //set static asset directory
+
+mongoose.connect('mongodb://localhost/mrkt');
+
+var db = mongoose.connection;
+// TODO: Look into syntax of both of the below -- get what they do but why write like this?
+db.on('error', console.error.bind(console, 'connection error...'));
+db.once('open', function callback() {
+  console.log('mrkt db opened');
+})
 
 //use bodyParser to get Post data
 app.use(bodyParser.urlencoded({extended: true}));   //get params from url (I think)
@@ -219,7 +226,13 @@ router.route('/products/:product_id')
 // all routes will be prefixed with /api/v1.0
 
 app.use('/api/v1.0', router);
-app.get('*', function(req, res) {
+
+// When a partial is requested - render from the jade template in views/partials
+app.get('/partials/:partialPath', function(req, res) {
+  res.render('partials/' + req.params.partialPath);
+})
+// NOTE: app.get('*') is the root of all evil. Seriously it makes debugging a nightmare
+app.get('/', function(req, res) {
   res.render('index');
 })
 
